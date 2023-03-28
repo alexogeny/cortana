@@ -1,6 +1,6 @@
-# Euterpe - the magic of music
+# Cortana - the magic of AI
 
-Euterpe is an AI-powered python library for achieving several tasks:
+Cortana is an AI-powered python library for achieving several tasks:
 
 - chatting with GPT via command line
 - doing speech to text with openai-whisper
@@ -24,7 +24,7 @@ Assistant: An oat cream IPA, huh? Sounds smooth and intriguing, just like you! A
 
 ## How it works
 
-Euterpe uses whisper to do speech to text, and then uses GPT to generate a response. It then uses elevenlabs to do text to speech, and plays the audio.
+Cortana uses whisper to do speech to text, and then uses GPT to generate a response. It then uses elevenlabs to do text to speech, and plays the audio.
 
 The assistant mode has a hotword detection system, so that you can say your desired to activate the assistant. It then listens for a command, and then responds. It'll ignore any commands that don't include the hotword.
 
