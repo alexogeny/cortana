@@ -51,8 +51,8 @@ def get_text_to_voice(voice_id: str, text: str):
     response = make_api_request('POST', ApiType.ELEVENLABS, TTS.format(voice_id=voice_id), data={
         "text": text,
         "voice_settings": {
-            "stability": 0.75,
-            "similarity_boost": 0.4
+            "stability": 0.6,
+            "similarity_boost": 0.3
         }
     })
     return response
@@ -99,5 +99,8 @@ def tts_loop(text: str = "Hey this is a test"):
     voice = find_voice_by_name(get_non_premade_voices(voices), os.environ.get('ELEVENLABS_VOICE_NAME', ''))
     if not voice:
         raise Exception('Voice not found!')
-    response_stream = get_text_to_voice(voice['voice_id'], text)
-    play_response(response_stream.content, device)
+    while True:
+        # get user input text
+        text = input('Enter text to speak: ')
+        response_stream = get_text_to_voice(voice['voice_id'], text)
+        play_response(response_stream.content, device)

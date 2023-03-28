@@ -5,6 +5,7 @@ import os
 from typing import List, Literal, NoReturn, TypedDict
 CHAT_COMPLETION = "chat/completions"
 from euterpe.api import make_api_request, ApiType
+MAX_TOKENS: int=os.environ.get('OPENAI_CHATGPT_MAX_TOKENS', 50) * 4
 
 
 class Message(TypedDict):
@@ -14,7 +15,7 @@ class Message(TypedDict):
 MessageList = List[Message]
 
 
-def get_chat_completion(prompt: list[Message], max_tokens: int=90, temperature: float=1.1, stop: list[str]=["\n", " Human:", " AI:"]) -> str:
+def get_chat_completion(prompt: list[Message], max_tokens: int=MAX_TOKENS, temperature: float=1.1, stop: list[str]=["\n", " Human:", " AI:"]) -> str:
     response = make_api_request('POST', ApiType.OPENAI, CHAT_COMPLETION, data={
         "messages": prompt,
         "max_tokens": max_tokens,
@@ -46,8 +47,8 @@ def get_chatbot_response(message_list: MessageList) -> List[Message]:
 
 
 def create_chat_gpt_prompt():
-    name = os.environ.get('ASSISTANT_NAME', 'Assistant')
-    user_name = os.environ.get('ASSISTANT_USER_NAME', 'User')
+    name = os.environ.get('ASSISTANT_NAME', 'Julie')
+    user_name = os.environ.get('ASSISTANT_USER_NAME', 'John')
     humor = os.environ.get('ASSISTANT_HUMOR', 'friendly')
     personality = os.environ.get('ASSISTANT_PERSONALITY', 'kind')
     role = os.environ.get('ASSISTANT_ROLE', 'assistant')
@@ -56,8 +57,9 @@ def create_chat_gpt_prompt():
     return ''.join((
         f"You are {name}, {user_name}'s {age} year old {role}. ",
         f"Your personality is {personality} and your humor is {humor}. ",
-        f"Your main interests are {topic}.",
-        f"You never refer to yourself as an AI, assistant, or bot.",
+        f"Your interests are {topic}. ",
+        "Never refer to yourself in the third person, as an AI, assistant, or bot. Be conversational. ",
+        "Try not to randomly respond with very long messages."
     ))
 
 def create_message_list_with_prompt(message_list: MessageList = []) -> List[Message]:
