@@ -4,10 +4,10 @@ The CLI module for the project.
 
 import click
 from dotenv import load_dotenv
-from euterpe.app import full_pipeline, clone_pipeline
-from euterpe.stt import stt_loop
-from euterpe.tts import tts_loop
-from euterpe.cgpt import chat_loop
+from cortana.app import full_pipeline, clone_pipeline
+from cortana.stt import stt_loop
+from cortana.tts import tts_loop
+from cortana.cgpt import chat_loop
 
 
 @click.group()

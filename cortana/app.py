@@ -10,9 +10,9 @@ from pathlib import Path
 import json
 import time
 import re
-from euterpe.cgpt import create_message_list_with_prompt, pluggable_chat_loop
-from euterpe.stt import stt_loop
-from euterpe.tts import tts_loop
+from cortana.cgpt import create_message_list_with_prompt, pluggable_chat_loop
+from cortana.stt import stt_loop
+from cortana.tts import tts_loop
 
 SKIP = 'e6bf9e50-901a-49d3-b00c-2fd22613e0e3'
 

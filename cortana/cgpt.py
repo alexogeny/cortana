@@ -4,7 +4,7 @@ Module for interacting with chatgpt api
 import os
 from typing import List, Literal, NoReturn, TypedDict
 CHAT_COMPLETION = "chat/completions"
-from euterpe.api import make_api_request, ApiType
+from cortana.api import make_api_request, ApiType
 MAX_TOKENS: int=os.environ.get('OPENAI_CHATGPT_MAX_TOKENS', 50) * 4
 
 

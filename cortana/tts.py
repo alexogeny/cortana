@@ -10,8 +10,8 @@ import json
 from pydub import AudioSegment # type: ignore
 import io
 
-from euterpe.stt import get_pyaudio_input_devices
-from euterpe.api import make_api_request, ApiType
+from cortana.stt import get_pyaudio_input_devices
+from cortana.api import make_api_request, ApiType
 
 VOICES = 'voices'
 VOICE= 'voices/{voice_id}'
