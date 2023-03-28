@@ -3,7 +3,7 @@ The CLI module for the project.
 """
 
 import click
-from dotenv import load_dotenv
+
 from cortana.app import full_pipeline, clone_pipeline
 from cortana.stt import stt_loop
 from cortana.tts import tts_loop
@@ -42,5 +42,4 @@ def clone() -> None:
     clone_pipeline()
 
 if __name__ == '__main__':
-    load_dotenv(override=True)
     cli()

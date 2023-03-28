@@ -1,7 +1,8 @@
 """
 Text to speech module that plugs into ElevenLabs.io
 """
-
+from dotenv import load_dotenv
+load_dotenv(override=True)
 import os
 from typing import Any, NoReturn
 import pyaudio

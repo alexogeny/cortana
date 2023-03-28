@@ -1,12 +1,13 @@
 """
 Module for interacting with chatgpt api
 """
+from dotenv import load_dotenv
+load_dotenv(override=True)
 import os
 from typing import List, Literal, NoReturn, TypedDict
 CHAT_COMPLETION = "chat/completions"
 from cortana.api import make_api_request, ApiType
-MAX_TOKENS: int=os.environ.get('OPENAI_CHATGPT_MAX_TOKENS', 50) * 4
-
+MAX_TOKENS: int=int(os.environ.get('OPENAI_CHATGPT_MAX_TOKENS', 50)) * 4
 
 class Message(TypedDict):
     role: Literal["user", "assistant", "system"]

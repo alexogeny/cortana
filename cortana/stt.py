@@ -1,7 +1,8 @@
 """
 Module that records text and turns it into speech.
 """
-
+from dotenv import load_dotenv
+load_dotenv(override=True)
 from typing import Any
 import whisper # type: ignore
 import os

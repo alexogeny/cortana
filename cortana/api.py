@@ -2,7 +2,8 @@ import enum
 import os
 import requests
 from typing import Any, Literal
-
+from dotenv import load_dotenv
+load_dotenv(override=True)
 class ApiType(enum.Enum):
     ELEVENLABS = os.environ.get('ELEVENLABS_API_URL')
     OPENAI = os.environ.get('OPENAI_API_URL')

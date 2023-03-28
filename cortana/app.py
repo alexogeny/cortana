@@ -4,6 +4,8 @@ The full pipeline that runs:
     2. Chat GPT
     3. Text to speech
 """
+from dotenv import load_dotenv
+load_dotenv(override=True)
 import os
 from uuid import uuid4
 from pathlib import Path
