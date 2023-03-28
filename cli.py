@@ -4,7 +4,7 @@ The CLI module for the project.
 
 import click
 from dotenv import load_dotenv
-from euterpe.app import full_pipeline
+from euterpe.app import full_pipeline, clone_pipeline
 from euterpe.stt import stt_loop
 from euterpe.tts import tts_loop
 from euterpe.cgpt import chat_loop
@@ -31,9 +31,15 @@ def chat_gpt() -> None:
     chat_loop()
 
 @cli.command()
-def full() -> None:
+@click.option('--with-tts/--no-tts', default=True, help='Include text-to-speech (TTS) in full mode')
+def full(with_tts: bool) -> None:
     click.echo('Full mode')
-    full_pipeline()
+    full_pipeline(with_tts=with_tts)
+
+@cli.command()
+def clone() -> None:
+    click.echo('Clone mode')
+    clone_pipeline()
 
 if __name__ == '__main__':
     load_dotenv(override=True)

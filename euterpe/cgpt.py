@@ -2,25 +2,20 @@
 Module for interacting with chatgpt api
 """
 import os
-import requests
+from typing import List, Literal, NoReturn, TypedDict
 CHAT_COMPLETION = "chat/completions"
-
-def build_auth_header():
-    return {
-        "Authorization": f"Bearer {os.environ.get('OPENAI_API_KEY')}",
-        "OpenAI-Organization": os.environ.get('OPENAI_ORG_ID'),
-    }
-
-def make_api_request(method, url, data=None):
-    headers = build_auth_header()
-    url = f"https://{os.environ.get('OPENAI_API_URL')}{url}"
-    print(url)
-    response = requests.request(method, url, headers=headers, json=data)
-    return response
+from euterpe.api import make_api_request, ApiType
 
 
-def get_chat_completion(prompt, max_tokens=90, temperature=1.1, stop=["\n", " Human:", " AI:"]):
-    response = make_api_request('POST', CHAT_COMPLETION, data={
+class Message(TypedDict):
+    role: Literal["user", "assistant", "system"]
+    content: str
+
+MessageList = List[Message]
+
+
+def get_chat_completion(prompt: list[Message], max_tokens: int=90, temperature: float=1.1, stop: list[str]=["\n", " Human:", " AI:"]) -> str:
+    response = make_api_request('POST', ApiType.OPENAI, CHAT_COMPLETION, data={
         "messages": prompt,
         "max_tokens": max_tokens,
         "temperature": temperature,
@@ -28,29 +23,29 @@ def get_chat_completion(prompt, max_tokens=90, temperature=1.1, stop=["\n", " Hu
         "stream": False,
         "model": os.environ.get("OPENAI_CHATGPT_MODEL")
     })
-    # print(response)
-    resp = response.json()
-    # print(resp)
-    return resp['choices'][0]['message']['content']
+    if not response:
+        raise Exception("No response from chatgpt api")
+
+    return response.get('choices', [{}])[0].get('message', {}).get('content', None)
 
 
-def append_user_input_to_message_list(message_list, user_input):
+def append_user_input_to_message_list(message_list: MessageList, user_input: str) -> List[Message]:
     message_list.append({"role": "user", "content": user_input})
     return message_list
 
 
-def append_bot_response_to_message_list(message_list, bot_response):
+def append_bot_response_to_message_list(message_list: MessageList, bot_response: str) -> List[Message]:
     message_list.append({"role": "assistant", "content": bot_response})
     return message_list
 
-def get_chatbot_response(message_list):
+def get_chatbot_response(message_list: MessageList) -> List[Message]:
     prompt = message_list
     bot_response = get_chat_completion(prompt)
     message_list = append_bot_response_to_message_list(message_list, bot_response)
     return message_list
 
 
-def create_message_list_with_prompt(message_list = []):
+def create_message_list_with_prompt(message_list: MessageList = []) -> List[Message]:
     if not message_list or len(message_list) == 0:
         message_list.append({
             "role": "system",
@@ -64,7 +59,7 @@ def create_message_list_with_prompt(message_list = []):
 
 
 
-def chat_loop():
+def chat_loop() -> NoReturn:
     message_list = create_message_list_with_prompt()
     while True:
         user_input = input("You: ")
@@ -73,7 +68,7 @@ def chat_loop():
         print(f"Bot: {message_list[-1]['content']}")
 
 
-def pluggable_chat_loop(message_list, user_input):
+def pluggable_chat_loop(message_list: MessageList, user_input: str) -> List[Message]:
     message_list = append_user_input_to_message_list(message_list, user_input)
     message_list = get_chatbot_response(message_list)
     return message_list

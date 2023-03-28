@@ -3,7 +3,7 @@ Module that records text and turns it into speech.
 """
 
 from typing import Any
-import whisper
+import whisper # type: ignore
 import os
 import pyaudio
 import numpy as np
@@ -21,7 +21,7 @@ OUTPUT_FILE = 'output.wav'
 
 def get_pyaudio_input_devices() -> list[Any]:
     p = pyaudio.PyAudio()
-    devices = []
+    devices: list[Any] = []
     for i in range(p.get_device_count()):
         devices.append(p.get_device_info_by_index(i))
     return devices
@@ -33,13 +33,13 @@ def select_pyaudio_input_device(input_devices: list[Any], device_index: int = 0)
     return input_devices[device_index]
 
 def get_whisper_model():
-    model = whisper.load_model(os.environ.get('OPENAI_WHISPER_MODEL'))
+    model = whisper.load_model(os.environ.get('OPENAI_WHISPER_MODEL', 'tiny'))
     return model
 
 def transcribe_audio_to_text(model):
     print('Transcribing...')
-    text = model.transcribe(OUTPUT_FILE)
-    return text['text']
+    text: str = model.transcribe(OUTPUT_FILE)
+    return f"{text['text']}".strip()
 
 def detect_silence(data, threshold):
     return np.mean(np.abs(data)) < threshold
@@ -87,7 +87,7 @@ def listen_to_pyaudio_input_device(input_device: Any):
     audio_data = b''.join(audio_data)
     return audio_data
 
-def save_to_wav_file(audio_data, channels, rate) -> None:
+def save_to_wav_file(audio_data, channels: int, rate: int) -> None:
     with wave.open(OUTPUT_FILE, 'wb') as wf:
         wf.setnchannels(channels)
         wf.setsampwidth(2)
