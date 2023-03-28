@@ -18,13 +18,13 @@ SKIP = 'e6bf9e50-901a-49d3-b00c-2fd22613e0e3'
 
 
 def check_for_hotword_or_hotword_corrections(text: str) -> str:
-    hotword = os.environ.get('VOICE_ASSISTANT_HOTWORD', SKIP)
+    hotword = os.environ.get('ASSISTANT_NAME', SKIP)
     if hotword != SKIP and hotword.lower() in text.lower():
         return text
     hotword_corrections = [
         hotword.strip()
         for hotword
-        in os.environ.get('VOICE_ASSISTANT_HOTWORD_CORRECTIONS', '').split(',')
+        in os.environ.get('ASSISTANT_NAME_CORRECTIONS', '').split(',')
     ]
     if hotword_corrections and len(hotword_corrections) > 0:
         for hotword_correction in hotword_corrections:
@@ -39,7 +39,7 @@ def check_for_hotword_or_hotword_corrections(text: str) -> str:
 
 def full_pipeline(with_tts: bool = True):
     message_list = create_message_list_with_prompt()
-    hotword = os.environ.get('VOICE_ASSISTANT_HOTWORD', SKIP)
+    hotword = os.environ.get('ASSISTANT_NAME', SKIP)
     if not (chat_folder:=Path('chats')).exists():
         chat_folder.mkdir()
     chat_file_name = f"chats/{time.time()}-{uuid4().hex}.json"

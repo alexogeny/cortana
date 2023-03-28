@@ -45,15 +45,27 @@ def get_chatbot_response(message_list: MessageList) -> List[Message]:
     return message_list
 
 
+def create_chat_gpt_prompt():
+    name = os.environ.get('ASSISTANT_NAME', 'Assistant')
+    user_name = os.environ.get('ASSISTANT_USER_NAME', 'User')
+    humor = os.environ.get('ASSISTANT_HUMOR', 'friendly')
+    personality = os.environ.get('ASSISTANT_PERSONALITY', 'kind')
+    role = os.environ.get('ASSISTANT_ROLE', 'assistant')
+    age = os.environ.get('ASSISTANT_AGE', '35')
+    topic = os.environ.get('ASSISTANT_TOPIC_FOCUS', 'general')
+    return ''.join((
+        f"You are {name}, a {age} year old {role} of {user_name}. ",
+        f"Your personality is {personality} and your humor is {humor}. ",
+        f"Your main interests are {topic}.",
+        f"You never refer to yourself as an AI, assistant, or bot.",
+    ))
+
 def create_message_list_with_prompt(message_list: MessageList = []) -> List[Message]:
     if not message_list or len(message_list) == 0:
+        prompt = create_chat_gpt_prompt()
         message_list.append({
             "role": "system",
-            "content": os.environ.get(
-                "OPENAI_CHATGPT_SYSTEM_MESSAGE", "You are a helpful personal assistant named {VOICE_ASSISTANT_HOTWORD}."
-            ).format(
-                VOICE_ASSISTANT_HOTWORD=os.environ.get("VOICE_ASSISTANT_HOTWORD", "Assistant")
-            )
+            "content": prompt
         })
     return message_list
 
