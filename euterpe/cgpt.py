@@ -54,7 +54,7 @@ def create_chat_gpt_prompt():
     age = os.environ.get('ASSISTANT_AGE', '35')
     topic = os.environ.get('ASSISTANT_TOPIC_FOCUS', 'general')
     return ''.join((
-        f"You are {name}, a {age} year old {role} of {user_name}. ",
+        f"You are {name}, {user_name}'s {age} year old {role}. ",
         f"Your personality is {personality} and your humor is {humor}. ",
         f"Your main interests are {topic}.",
         f"You never refer to yourself as an AI, assistant, or bot.",

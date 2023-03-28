@@ -39,7 +39,6 @@ def check_for_hotword_or_hotword_corrections(text: str) -> str:
 
 def full_pipeline(with_tts: bool = True):
     message_list = create_message_list_with_prompt()
-    hotword = os.environ.get('ASSISTANT_NAME', SKIP)
     if not (chat_folder:=Path('chats')).exists():
         chat_folder.mkdir()
     chat_file_name = f"chats/{time.time()}-{uuid4().hex}.json"
