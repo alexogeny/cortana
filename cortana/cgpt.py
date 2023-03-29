@@ -4,6 +4,10 @@ Module for interacting with chatgpt api
 from dotenv import load_dotenv
 load_dotenv(override=True)
 import os
+from uuid import uuid4
+from pathlib import Path
+import time
+import json
 from typing import List, Literal, NoReturn, TypedDict
 CHAT_COMPLETION = "chat/completions"
 from cortana.api import make_api_request, ApiType
@@ -76,11 +80,20 @@ def create_message_list_with_prompt(message_list: MessageList = []) -> List[Mess
 
 def chat_loop() -> NoReturn:
     message_list = create_message_list_with_prompt()
+    if not (chat_folder:=Path('chats')).exists():
+        chat_folder.mkdir()
+    chat_file_name = f"chats/{time.time()}-{uuid4().hex}.json"
+    chat_file = Path(chat_file_name)
+    with open(chat_file, 'w') as f:
+        f.write(json.dumps(message_list, indent=2))
     while True:
         user_input = input("You: ")
         message_list = append_user_input_to_message_list(message_list, user_input)
         message_list = get_chatbot_response(message_list)
         print(f"Bot: {message_list[-1]['content']}")
+        with open(chat_file, 'w') as f:
+            f.write(json.dumps(message_list, indent=2))
+
 
 
 def pluggable_chat_loop(message_list: MessageList, user_input: str) -> List[Message]:
