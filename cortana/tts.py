@@ -93,15 +93,18 @@ def play_response(response_data, device: Any):
     stream.close()
     p.terminate()
 
-def tts_loop(text: str = "Hey this is a test"):
+def tts_loop(text: str|None = None):
     devices = get_pyaudio_input_devices()
     device = select_pyaudio_output_device(devices)
     voices = get_voices()
     voice = find_voice_by_name(get_non_premade_voices(voices), os.environ.get('ELEVENLABS_VOICE_NAME', ''))
     if not voice:
         raise Exception('Voice not found!')
-    while True:
-        # get user input text
-        text = input('Enter text to speak: ')
+    if not text:
+        while True:
+            text = input('Enter text to speak: ')
+            response_stream = get_text_to_voice(voice['voice_id'], text)
+            play_response(response_stream.content, device)
+    else:
         response_stream = get_text_to_voice(voice['voice_id'], text)
         play_response(response_stream.content, device)
