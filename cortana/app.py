@@ -39,7 +39,7 @@ def check_for_hotword_or_hotword_corrections(text: str) -> str:
     raise ValueError('Hotword not found')
 
 
-def full_pipeline(with_tts: bool = True):
+def full_pipeline(with_tts: bool = True, provider: str | None = None):
     message_list = create_message_list_with_prompt()
     if not (chat_folder:=Path('chats')).exists():
         chat_folder.mkdir()
@@ -55,7 +55,7 @@ def full_pipeline(with_tts: bool = True):
             text = check_for_hotword_or_hotword_corrections(text)
             response = pluggable_chat_loop(message_list, text)
             if with_tts:
-                tts_loop(response[-1]['content'])
+                tts_loop(response[-1]['content'], provider=provider)
             else:
                 print(response[-1]['content'])
 
@@ -65,7 +65,7 @@ def full_pipeline(with_tts: bool = True):
             pass
 
 
-def clone_pipeline():
+def clone_pipeline(provider: str | None = None):
     while True:
         text = stt_loop()
-        tts_loop(text)
+        tts_loop(text, provider=provider)

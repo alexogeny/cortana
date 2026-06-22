@@ -4,9 +4,9 @@ Cortana is an AI-powered python library for achieving several tasks:
 
 - chatting with GPT via command line
 - doing speech to text with openai-whisper
-- doing text to speech with elevenlabs
-- creating a personal assistant with whisper, GPT, and elevenlabs
-- speaking with a different voice using whisper and elevenlabs
+- doing text to speech with elevenlabs or 60db (pick your provider)
+- creating a personal assistant with whisper, GPT, and your chosen TTS provider
+- speaking with a different voice using whisper and your chosen TTS provider
 
 Example dialogue (user speaks into microphone, assistant speaks responses back):
 
@@ -24,7 +24,7 @@ Assistant: An oat cream IPA, huh? Sounds smooth and intriguing, just like you! A
 
 ## How it works
 
-Cortana uses whisper to do speech to text, and then uses GPT to generate a response. It then uses elevenlabs to do text to speech, and plays the audio.
+Cortana uses whisper to do speech to text, and then uses GPT to generate a response. It then uses a text-to-speech provider (elevenlabs or 60db, configurable via `TTS_PROVIDER`) to do text to speech, and plays the audio.
 
 The assistant mode has a hotword detection system, so that you can say your desired to activate the assistant. It then listens for a command, and then responds. It'll ignore any commands that don't include the hotword.
 
@@ -42,6 +42,24 @@ cp example.env .env
 ```
 
 Enter your API keys in the .env file, and change the name + voice. The voice should be one of the voices available in the [elevenlabs API](https://elevenlabs.io/) - either default voices or one that you've cloned. It'll pick the first voice that matches (case-insensitive.)
+
+### Choosing a TTS provider
+
+Cortana can synthesise speech with either [ElevenLabs](https://elevenlabs.io/) or [60db](https://docs.60db.ai). Set the default in `.env`:
+
+```bash
+TTS_PROVIDER=elevenlabs   # or 60db
+```
+
+and override it for a single run with `--provider`:
+
+```bash
+python cli.py full --provider 60db
+python cli.py tts --provider elevenlabs
+python cli.py clone --provider 60db
+```
+
+Each provider has its own keys, voice name, and voice settings in `.env` (`ELEVENLABS_*` use 0–1 stability/similarity, `SIXTYDB_*` use 0–100). For 60db the configured voice is matched (case-insensitive) against your own voices from `/myvoices`. Both providers play back identically — buffered mp3 — so switching is seamless. 60db voices are cached to `voices_60db.json` (delete to refresh, same as `voices.json`).
 
 For audio setup, I use a virtual audio mixer. If you don't have a mixer, go and look in your audio devices to see what the device names are, and set them in the .env file.
 
@@ -62,15 +80,15 @@ python cli.py full
 
 By default it will use gpt-4. If you do not have API access to GPT-4, change the model to gpt-3.5-turbo in the .env file.
 
-Also assumes you have an API key for elevenlabs. If you don't, you can get one for free with some trial characters at [elevenlabs](https://elevenlabs.io/).
+Also assumes you have an API key for your chosen TTS provider. For elevenlabs you can get one for free with some trial characters at [elevenlabs](https://elevenlabs.io/); for 60db see [docs.60db.ai](https://docs.60db.ai). You only need a key for the provider you actually use.
 
 If you find that the whisper tiny model is not accurate enough, bump the model size to small or medium. Has a trade-off of speed, but the accuracy is much better. I find the 'small' model works pretty well without any fine-tuning.
 
-Voices are cached to voices.json to save on API calls. If you want to refresh the voices, delete the file.
+Voices are cached to save on API calls (`voices.json` for elevenlabs, `voices_60db.json` for 60db). If you want to refresh the voices, delete the file.
 
 ## Limitations
 
-Currently does not do streaming from elevenlabs - haven't yet figured out how to make the playback experience not awful. If you have any ideas, please let me know!
+Currently does not do streaming - playback is buffered for both providers (the whole clip is generated, then played). 60db does offer NDJSON and WebSocket streaming, so progressive playback is a possible future improvement. If you have any ideas, please let me know!
 
 ## Future goals / todos
 

@@ -1,4 +1,5 @@
 .env
 voices.json
+voices_60db.json
 output.wav
 chats/

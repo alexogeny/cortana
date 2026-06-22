@@ -7,6 +7,7 @@ load_dotenv(override=True)
 class ApiType(enum.Enum):
     ELEVENLABS = os.environ.get('ELEVENLABS_API_URL')
     OPENAI = os.environ.get('OPENAI_API_URL')
+    SIXTYDB = os.environ.get('SIXTYDB_API_URL')
 
 
 Method = Literal['GET', 'POST', 'PUT', 'DELETE']
@@ -27,7 +28,11 @@ def build_auth_header(api_type: ApiType) -> dict[Any, Any]:
         "Authorization": f"Bearer {os.environ.get('OPENAI_API_KEY')}",
         "OpenAI-Organization": os.environ.get('OPENAI_ORG_ID'),
     }}
-    
+    if api_type == ApiType.SIXTYDB:
+        header = {**header, **{
+        "Authorization": f"Bearer {os.environ.get('SIXTYDB_API_KEY')}",
+    }}
+
     return header
 
 
@@ -35,9 +40,8 @@ def make_api_request(method: Method, api_type: ApiType, url: str, data: dict[Any
     headers = build_auth_header(api_type)
     url = f"https://{api_type.value}{url}"
     response = requests.request(method, url, headers=headers, json=data, stream=stream)
-    if not stream and response.headers['Content-Type'] != 'application/json':
-        return response
-    if not stream and response.headers['Content-Type'] == 'application/json':
-        return response.json()
     if stream:
         return response
+    if 'application/json' in response.headers.get('Content-Type', ''):
+        return response.json()
+    return response

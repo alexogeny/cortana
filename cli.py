@@ -15,9 +15,10 @@ def cli():
     pass
 
 @cli.command()
-def tts() -> None:
+@click.option('--provider', default=None, help='TTS provider: elevenlabs or 60db (overrides TTS_PROVIDER)')
+def tts(provider: str | None) -> None:
     click.echo('Text to speech')
-    tts_loop()
+    tts_loop(provider=provider)
 
 @cli.command()
 def stt() -> None:
@@ -32,14 +33,16 @@ def chat_gpt() -> None:
 
 @cli.command()
 @click.option('--with-tts/--no-tts', default=True, help='Include text-to-speech (TTS) in full mode')
-def full(with_tts: bool) -> None:
+@click.option('--provider', default=None, help='TTS provider: elevenlabs or 60db (overrides TTS_PROVIDER)')
+def full(with_tts: bool, provider: str | None) -> None:
     click.echo('Full mode')
-    full_pipeline(with_tts=with_tts)
+    full_pipeline(with_tts=with_tts, provider=provider)
 
 @cli.command()
-def clone() -> None:
+@click.option('--provider', default=None, help='TTS provider: elevenlabs or 60db (overrides TTS_PROVIDER)')
+def clone(provider: str | None) -> None:
     click.echo('Clone mode')
-    clone_pipeline()
+    clone_pipeline(provider=provider)
 
 if __name__ == '__main__':
     cli()
